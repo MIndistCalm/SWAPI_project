@@ -27,7 +27,10 @@ const HomePage = () => {
           className='border rounded-md py-2 px-4 w-full h-[42px]'
           placeholder='Search Star Wars character...'
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setCurrent(1)
+          }}
         />
       </div>
       <div className='relative'>
