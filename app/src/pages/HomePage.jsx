@@ -1,47 +1,40 @@
 import React, { useEffect, useState } from 'react'
+import CardsOfCharacters from '../components/CardsOfCharacters';
+import Pagination from '../components/Pagination';
 import { useDebounce } from '../hooks/debounce';
 import { useSearchPeopleQuery } from '../store/peoples/people.api'
 
 const HomePage = () => {
   const [search, setSearch] = useState('');
-  const [visibleDropdown, setVisibleDropdown] = useState(false);
-
   const debounced = useDebounce(search)
-  const { isLoading, isError, data } = useSearchPeopleQuery(debounced, {
-    skip: debounced.length < 3,
+  const [current, setCurrent] = useState(1);
+  const { isLoading, isError, data } = useSearchPeopleQuery({ search: debounced, page: current }, {
     refetchOnFocus: true,
   })
+  const [pages, setPages] = useState(1);
 
   useEffect(() => {
-    setVisibleDropdown(debounced.length > 3 && data)
-    console.log(data)
-  }, [debounced, data]);
+    setPages(Math.ceil(data && data.count / 10))
+  }, [current, data]);
 
   return (
-    <div className='flex justify-center pt-10 max-auto h-screen w-screen'>
-      {isError && <p className='text-center text-red-600'>Someting went wrong...</p>}
+    <div className='flex flex-col items-center pt-10 max-full h-auto w-screen'>
+      {isError && <p className='text-center text-red-600 text-2xl p-5 border w-full rounded-md bg-gray-100'>Something went wrong...</p>}
 
       <div className='relative w-[560px]'>
         <input
           type='text'
-          className='border py-2 px-4 w-full h-[42px] mb-2'
-          placeholder='Search for Star Wars character...'
+          className='border rounded-md py-2 px-4 w-full h-[42px]'
+          placeholder='Search Star Wars character...'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        {visibleDropdown && <ul className='list-none absolute top-[42px] left-0 right-0 max-h-[200px] overflow-y-scroll shadow-md bg-white'>
-          {isLoading && <p className='text-center text-gray-500'>Loading...</p>}
-          {data?.results.map((person) => {
-            return <li
-              key={person.url}
-              className='py-2 px-4 hover:bg-gray-500 hover:text-white cursor-pointer'
-            >
-              {person.name}
-            </li>
-          })}
-        </ul>}
       </div>
-
+      <div className='relative'>
+        {isLoading && <p className='text-center m-10 w-full text-2xl p-5 border rounded-md bg-gray-200'>Loading...</p>}
+        {data && <CardsOfCharacters data={data} />}
+      </div>
+      <Pagination data={data} current={current} setCurrent={setCurrent} pages={pages} />
     </div>
   )
 }
