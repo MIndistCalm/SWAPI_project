@@ -8,12 +8,16 @@ export const peopleApi = createApi({
   refetchOnFocus: true,
   endpoints: (builder) => ({
     searchPeople: builder.query({
-      query: (search) => ({
-        url: `people/`,
-        params: {
-          search: search,
-        },
-      }),
+      query: (args) => {
+        const { search, page } = args
+        return {
+          url: `people/`,
+          params: {
+            search: search,
+            page: page,
+          },
+        }
+      },
       transformResponse: (response) => response,
     }),
   }),
