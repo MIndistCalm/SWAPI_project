@@ -1,6 +1,6 @@
 ## Команды для запуска проекта
 
-### `git clone https://github.com/MIndistCalm/test_task_TPU.git`
+### `git clone https://github.com/MIndistCalm/SWAPI_project.git`
 ### `cd app`
 ### `npm i`
 ### `npm start`
